@@ -1,0 +1,12 @@
+[
+    { "word": "こんにちは", "sentence": "こんにちは、お元気ですか？", "meaning": "你好", "nextReview": 0, "interval": 1 },
+    { "word": "ありがとう", "sentence": "ありがとう、助かりました。", "meaning": "谢谢", "nextReview": 0, "interval": 1 },
+    { "word": "さようなら", "sentence": "さようなら、また明日。", "meaning": "再见", "nextReview": 0, "interval": 1 },
+    { "word": "おはよう", "sentence": "おはよう、良い一日を。", "meaning": "早上好", "nextReview": 0, "interval": 1 },
+    { "word": "すみません", "sentence": "すみません、道を教えてください。", "meaning": "对不起", "nextReview": 0, "interval": 1 },
+    { "word": "いただきます", "sentence": "いただきます、美味しそうですね。", "meaning": "我开动了", "nextReview": 0, "interval": 1 },
+    { "word": "ごちそうさま", "sentence": "ごちそうさま、とても美味しかったです。", "meaning": "多谢款待", "nextReview": 0, "interval": 1 },
+    { "word": "はい", "sentence": "はい、そうです。", "meaning": "はい", "nextReview": 0, "interval": 1 },
+    { "word": "いいえ", "sentence": "いいえ、違います。", "meaning": "いいえ", "nextReview": 0, "interval": 1 },
+    { "word": "お願いします", "sentence": "お願いします、これを手伝ってください。", "meaning": "お願いします", "nextReview": 0, "interval": 1 }
+]
