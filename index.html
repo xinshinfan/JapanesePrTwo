@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日语单词练习</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #word, #sentence, #meaning {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        #input {
+            font-size: 18px;
+            padding: 5px;
+            width: 200px;
+        }
+        button {
+            font-size: 18px;
+            padding: 5px 10px;
+            margin: 10px;
+        }
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        #progress {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>日语单词练习</h1>
+    <div id="progress"></div>
+    <div id="word"></div>
+    <div id="meaning"></div>
+    <div id="sentence"></div>
+    <button onclick="playWord()" accesskey="W">播放单词</button>
+    <button onclick="playSentence()" accesskey="S">播放例句</button>
+    <br>
+    <input type="text" id="input" placeholder="输入单词">
+    <button onclick="checkAnswer(true)" accesskey="C">正确</button>
+    <button onclick="checkAnswer(false)" accesskey="X">错误</button>
+    <button onclick="nextWord()" accesskey="N">下一个</button>
+    <div id="result"></div>
+
+    <script src="memoryCurve.js"></script>
+    <script>
+        let words = [];
+        let currentWordIndex = 0;
+
+        async function loadWords() {
+            words = await getWordsFromGitHub();
+            if (words) {
+                currentWordIndex = getNextWordToReview(words);
+                loadWord();
+            }
+        }
+
+        function loadWord() {
+            if (words.length === 0) return;
+
+            const wordElement = document.getElementById("word");
+            const meaningElement = document.getElementById("meaning");
+            const sentenceElement = document.getElementById("sentence");
+            const currentWord = words[currentWordIndex];
+
+            wordElement.textContent = currentWord.word;
+            meaningElement.textContent = currentWord.meaning;
+            sentenceElement.textContent = currentWord.sentence;
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progressElement = document.getElementById("progress");
+            progressElement.textContent = `当前单词: ${currentWordIndex + 1} / ${words.length}`;
+        }
+
+        function playAudio(text) {
+            const url = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&le=jap`;
+            audio.src = url;
+            audio.play().catch(e => console.log("播放失败:", e));
+        }
+
+        function playWord() {
+            if (words.length === 0) return;
+            playAudio(words[currentWordIndex].word);
+        }
+
+        function playSentence() {
+            if (words.length === 0) return;
+            playAudio(words[currentWordIndex].sentence);
+        }
+
+        function checkAnswer(isCorrect) {
+            const input = document.getElementById("input");
+            const result = document.getElementById("result");
+            const currentWord = words[currentWordIndex];
+
+            if (isCorrect) {
+                result.textContent = "正确！";
+                result.style.color = "green";
+            } else {
+                result.textContent = "错误，正确答案是：" + currentWord.word;
+                result.style.color = "red";
+            }
+
+            updateWord(currentWord, isCorrect);
+            saveWords(words);
+            nextWord();
+        }
+
+        function nextWord() {
+            currentWordIndex = getNextWordToReview(words);
+            loadWord();
+            document.getElementById("input").value = "";
+            document.getElementById("result").textContent = "";
+        }
+
+        function saveWords(words) {
+            localStorage.setItem("words", JSON.stringify(words));
+        }
+
+        function loadProgress() {
+            const savedWords = localStorage.getItem("words");
+            if (savedWords) {
+                words = JSON.parse(savedWords);
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            switch (event.key.toUpperCase()) {
+                case 'W': // 播放单词
+                    playWord();
+                    break;
+                case 'S': // 播放例句
+                    playSentence();
+                    break;
+                case 'C': // 正确
+                    checkAnswer(true);
+                    break;
+                case 'X': // 错误
+                    checkAnswer(false);
+                    break;
+                case 'N': // 下一个单词
+                    nextWord();
+                    break;
+                default:
+                    // 忽略其他按键
+                    break;
+            }
+        });
+
+        window.onload = function() {
+            loadWords();
+        };
+
+        window.onbeforeunload = function() {
+            saveWords(words);
+        };
+    </script>
+</body>
+</html>
